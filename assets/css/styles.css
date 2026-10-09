@@ -932,12 +932,12 @@ h1, h2, h3, h4 {
    CALL TO ACTION BAND
    ========================================================================== */
 .cta-band {
-  background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-bg-alt) 100%);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   padding: var(--space-12) var(--space-6);
   text-align: center;
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-md);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -998,7 +998,7 @@ h1, h2, h3, h4 {
 .form-textarea {
   width: 100%;
   min-height: 48px;
-  background-color: var(--color-bg);
+  background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: var(--space-3) var(--space-4);
@@ -1011,7 +1011,7 @@ h1, h2, h3, h4 {
 .form-select:focus,
 .form-textarea:focus {
   border-color: var(--color-border-focus);
-  box-shadow: 0 0 0 3px var(--color-accent-dim);
+  box-shadow: 0 0 0 3px rgba(17, 19, 24, 0.08);
   outline: none;
 }
 
@@ -1025,7 +1025,7 @@ h1, h2, h3, h4 {
 .form-select {
   cursor: pointer;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239aa1b2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23525866' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 14px center;
   padding-right: 40px;
