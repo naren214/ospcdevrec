@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join the Fan Community &amp; Suggest Ideas — Jack Pembrook Fan Platform</title>
+  <meta name="description" content="Sign up for independent fan alerts, get heads-up notifications on new Jack Pembrook video drops, and suggest future challenge experiments.">
+  <meta name="theme-color" content="#08090d">
+
+  <!-- Open Graph / Social Meta -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Join the Fan Community — Jack Pembrook Fan Platform">
+  <meta property="og:description" content="Get upload alerts and suggest the next audacious experiment on the independent Jack Pembrook fan roster.">
+  <meta property="og:image" content="https://i.ytimg.com/vi/x3JOMDVdG5E/hqdefault.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Join the Fan Community — Jack Pembrook Fan Platform">
+  <meta name="twitter:description" content="Get upload alerts and suggest future video ideas.">
+  <meta name="twitter:image" content="https://i.ytimg.com/vi/x3JOMDVdG5E/hqdefault.jpg">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+
+  <!-- Typography: Preconnect for Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <!-- Accessible Skip Link -->
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <!-- Header & Navigation -->
+  <header class="site-header" role="banner">
+    <div class="container nav-wrap">
+      <a href="index.html" class="brand" aria-label="Jack Pembrook Fan Platform Home">
+        <img src="assets/img/avatar.jpg" alt="" class="brand-avatar" width="38" height="38" loading="eager" decoding="async" fetchpriority="high">
+        <span>Jack Pembrook</span>
+        <span class="brand-tag">Fan Project</span>
+      </a>
+
+      <!-- Mobile Navigation Toggle Button -->
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Open menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+
+      <!-- Nav Menu -->
+      <nav id="primary-nav" class="nav-menu" role="navigation" aria-label="Primary Navigation">
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="videos.html" class="nav-link">Videos</a></li>
+          <li><a href="join.html" class="nav-link" aria-current="page">Join</a></li>
+        </ul>
+        <div class="nav-cta-desktop">
+          <a href="join.html" class="btn btn--primary btn--sm" aria-current="page">Join the List</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main id="main" tabindex="-1">
+    <section class="section" aria-labelledby="join-page-title">
+      <div class="container container--narrow">
+        <div class="section-head section-head--center reveal">
+          <div class="badge">
+            <span class="badge-dot" aria-hidden="true"></span>
+            Independent Fan Dispatch
+          </div>
+          <h1 id="join-page-title" class="section-title">Join the Fan Roster</h1>
+          <p class="section-desc">
+            Stay in the loop with release notifications when Jack drops an ambitious new video experiment, and vote on or suggest what challenge he should tackle next.
+          </p>
+        </div>
+
+        <!-- Clarification Banner -->
+        <div class="footer-disclaimer-card reveal" style="margin-bottom: var(--space-8); border-left: 3px solid var(--color-accent);">
+          <strong>Please Note:</strong> This is a completely volunteer, fan-run initiative created by enthusiastic viewers. It is not managed or endorsed by Jack Pembrook, and does not promise exclusive perks, direct personal replies, or merchandise not officially offered by Jack himself.
+        </div>
+
+        <!-- Form Card Container -->
+        <div class="form-shell reveal" id="form-shell">
+          <!-- Live Status Announcer for Screen Readers & Inline Alerts -->
+          <div id="form-status" class="form-alert" role="status" aria-live="polite" aria-atomic="true"></div>
+
+          <!-- Semantic Netlify-ready Progressive Enhancement Form -->
+          <form id="join-form" name="fan-signup" method="POST" action="/api/submit" data-netlify="true" netlify-honeypot="bot-field" novalidate aria-labelledby="form-heading">
+            <h2 id="form-heading" class="visually-hidden">Fan Registration Form</h2>
+
+            <!-- Netlify Form Name -->
+            <input type="hidden" name="form-name" value="fan-signup">
+
+            <!-- Honeypot Field for Spam Prevention (Hidden visually & from assistive tech) -->
+            <div class="visually-hidden" aria-hidden="true">
+              <label for="bot-field">Do not fill this field if you are human:</label>
+              <input type="text" id="bot-field" name="bot-field" tabindex="-1" autocomplete="off">
+            </div>
+
+            <!-- Field 1: Full Name -->
+            <div class="form-group">
+              <label for="name" class="form-label">
+                <span>Your Name <span class="form-label-required" aria-hidden="true">*</span></span>
+              </label>
+              <input type="text" id="name" name="name" class="form-input" required autocomplete="name" placeholder="e.g. Alex Rivera" aria-describedby="name-error">
+              <p id="name-error" class="form-error-msg" role="alert" aria-live="assertive"></p>
+            </div>
+
+            <!-- Field 2: Email Address -->
+            <div class="form-group">
+              <label for="email" class="form-label">
+                <span>Email Address <span class="form-label-required" aria-hidden="true">*</span></span>
+              </label>
+              <input type="email" id="email" name="email" class="form-input" required autocomplete="email" placeholder="e.g. alex@example.com" aria-describedby="email-error">
+              <p id="email-error" class="form-error-msg" role="alert" aria-live="assertive"></p>
+            </div>
+
+            <!-- Field 3: Favourite Video (Static HTML Options) -->
+            <div class="form-group">
+              <label for="favourite-video" class="form-label">
+                <span>Favourite Jack Pembrook Video <span style="font-size: var(--fs-xs); color: var(--color-text-faint); font-weight: 400;">(Optional)</span></span>
+              </label>
+              <select id="favourite-video" name="favourite-video" class="form-select" aria-describedby="favourite-video-hint">
+                <option value="">-- Select a video --</option>
+                <option value="Can You Profit From an All Inclusive Hotel?">Can You Profit From an All Inclusive Hotel?</option>
+                <option value="I Secretly Built a House in the Richest Neighborhood">I Secretly Built a House in the Richest Neighborhood</option>
+                <option value="How Long Can You Live in a Casino For Free?">How Long Can You Live in a Casino For Free?</option>
+                <option value="I Took the 'X-Rated' Adult Only Cruise">I Took the "X-Rated" Adult Only Cruise</option>
+                <option value="I Tricked My City With a Fake Monster">I Tricked My City With a Fake Monster</option>
+                <option value="How Many Countries Can You Visit Without Sleeping?">How Many Countries Can You Visit Without Sleeping?</option>
+                <option value="Can You Profit From a First Class Flight?">Can You Profit From a First Class Flight?</option>
+                <option value="I Stealth Camped Outside North Korea">I Stealth Camped Outside North Korea</option>
+                <option value="I Tested Scams to Make Money">I Tested Scams to Make Money</option>
+                <option value="I Acted Rich vs Poor to See if I Was Treated Differently">I Acted Rich vs Poor to See if I Was Treated Differently</option>
+                <option value="Can You Profit From an All Inclusive Cruise?">Can You Profit From an All Inclusive Cruise?</option>
+                <option value="I Tested Ridiculous Knock Off Products">I Tested Ridiculous Knock Off Products</option>
+                <option value="Another one">Another one (from earlier uploads or Pack Jembrook)</option>
+              </select>
+              <div id="favourite-video-hint" class="visually-hidden">Choose your favorite video from the list or select Another one.</div>
+            </div>
+
+            <!-- Field 4: Suggestion Textarea with Live Counter -->
+            <div class="form-group">
+              <label for="suggestion" class="form-label">
+                <span>What would you love to see next? <span style="font-size: var(--fs-xs); color: var(--color-text-faint); font-weight: 400;">(Optional)</span></span>
+              </label>
+              <textarea id="suggestion" name="suggestion" class="form-textarea" maxlength="500" placeholder="e.g. Try to profit from a Michelin 3-star restaurant, or a 48-hour stealth test in an abandoned mall..." aria-describedby="suggestion-counter suggestion-error"></textarea>
+              <div class="form-meta-row">
+                <span id="suggestion-counter" class="form-meta-hint">Suggestions are compiled into community brainstorm recaps.</span>
+                <span id="suggestion-count" aria-live="polite" aria-atomic="true">0 / 500</span>
+              </div>
+              <p id="suggestion-error" class="form-error-msg" role="alert" aria-live="assertive"></p>
+            </div>
+
+            <!-- Field 5: Consent Checkbox -->
+            <div class="form-group" style="margin-top: var(--space-6);">
+              <label class="form-checkbox-label" for="consent">
+                <input type="checkbox" id="consent" name="consent" class="form-checkbox" required aria-describedby="consent-error">
+                <span>I agree to be contacted about new videos and fan project updates. <span class="form-label-required" aria-hidden="true">*</span></span>
+              </label>
+              <p id="consent-error" class="form-error-msg" role="alert" aria-live="assertive"></p>
+            </div>
+
+            <!-- Submit Button -->
+            <div style="margin-top: var(--space-8);">
+              <button type="submit" class="btn btn--primary btn--block" style="min-height: 50px; font-size: var(--fs-base);">
+                <span>Join the Fan List</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-top">
+        <div>
+          <a href="index.html" class="brand" aria-label="Jack Pembrook Fan Platform Home">
+            <img src="assets/img/avatar.jpg" alt="" class="brand-avatar" width="38" height="38" loading="lazy" decoding="async">
+            <span>Jack Pembrook</span>
+            <span class="brand-tag">Fan Project</span>
+          </a>
+          <p class="footer-brand-desc">
+            An independent, fan-run digital showcase honoring the empirical adventures and investigative comedy of Jack Pembrook.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="footer-col-title">Navigation</h2>
+          <ul class="footer-nav-list">
+            <li><a href="index.html" class="footer-nav-link">Home</a></li>
+            <li><a href="videos.html" class="footer-nav-link">Video Catalog</a></li>
+            <li><a href="join.html" class="footer-nav-link">Join Fan List</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="footer-col-title">Official Links</h2>
+          <ul class="footer-nav-list">
+            <li><a href="https://www.youtube.com/@jackpembrook" class="footer-nav-link" target="_blank" rel="noopener noreferrer">YouTube (@jackpembrook)</a></li>
+            <li><a href="https://www.youtube.com/@packjembrook" class="footer-nav-link" target="_blank" rel="noopener noreferrer">Pack Jembrook Channel</a></li>
+            <li><a href="mailto:Jack.Pembrook@night.co" class="footer-nav-link">Business Inquiries (Night)</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Required Unofficial Disclaimer Card -->
+      <div class="footer-disclaimer-card">
+        <strong>Disclaimer:</strong> Unofficial fan project. Not affiliated with or endorsed by Jack Pembrook. All video rights, trademarks, and associated media belong to their respective copyright holders.
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; 2026 Jack Pembrook Fan Project. Built with clean, accessible standards.</span>
+        <span>Hosted for fan appreciation.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Main & Form Scripts -->
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/form.js"></script>
+</body>
+</html>
