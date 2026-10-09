@@ -10,25 +10,24 @@
   --color-bg-alt: #f1f3f7;
   --color-surface: #ffffff;
   --color-surface-hover: #fcfcfd;
-  --color-surface-active: #f1f3f7;
   --color-border: #e2e5eb;
   --color-border-subtle: #eceef2;
   --color-border-focus: #111318;
 
   --color-text-main: #111318;
   --color-text-muted: #4b5262;
-  --color-text-faint: #6b7280;
+  --color-text-faint: #525866;
   --color-text-inverse: #ffffff;
 
-  --color-accent: #c25e00;
-  --color-accent-hover: #9a4a00;
-  --color-accent-dim: rgba(194, 94, 0, 0.08);
-  --color-accent-glow: rgba(194, 94, 0, 0.18);
+  --color-accent: #ad4e00;
+  --color-accent-hover: #8f3e00;
+  --color-accent-dim: rgba(173, 78, 0, 0.09);
+  --color-accent-glow: rgba(173, 78, 0, 0.18);
 
-  --color-success: #059669;
-  --color-success-bg: rgba(5, 150, 105, 0.08);
-  --color-error: #dc2626;
-  --color-error-bg: rgba(220, 38, 38, 0.08);
+  --color-success: #047857;
+  --color-success-bg: rgba(4, 120, 87, 0.08);
+  --color-error: #b91c1c;
+  --color-error-bg: rgba(185, 28, 28, 0.08);
 
   /* --- Typography --- */
   --font-display: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -56,16 +55,14 @@
   --space-12: 3rem;    /* 48px */
   --space-16: 4rem;    /* 64px */
   --space-20: 5rem;    /* 80px */
-  --space-24: 6rem;    /* 96px */
 
   /* --- Radii & Shadows --- */
-  --radius-sm: 6px;
+  --radius-sm: 4px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-full: 9999px;
 
-  --shadow-sm: 0 1px 3px rgba(17, 19, 24, 0.05);
   --shadow-md: 0 4px 16px rgba(17, 19, 24, 0.07);
   --shadow-lg: 0 12px 32px rgba(17, 19, 24, 0.09);
   --shadow-glow: 0 0 20px var(--color-accent-glow);
@@ -263,8 +260,14 @@ textarea::placeholder {
   color: var(--color-accent);
   padding: 2px 7px;
   border-radius: var(--radius-full);
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  border: 1px solid rgba(173, 78, 0, 0.25);
   margin-left: 2px;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
 }
 
 .nav-links {
@@ -434,26 +437,38 @@ textarea::placeholder {
   width: 100%;
 }
 
+.btn:disabled,
+.btn[disabled] {
+  opacity: 0.75;
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
 .badge {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  font-size: var(--fs-xs);
-  font-weight: 700;
+  width: fit-content;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: var(--space-1) var(--space-3);
+  padding: 5px 12px;
   border-radius: var(--radius-full);
-  background-color: var(--color-accent-dim);
-  color: var(--color-accent);
-  border: 1px solid rgba(245, 158, 11, 0.25);
+  background-color: var(--color-surface);
+  color: var(--color-text-main);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 1px 3px rgba(17, 19, 24, 0.05);
 }
 
 .badge-dot {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: var(--radius-full);
   background-color: var(--color-accent);
+  box-shadow: 0 0 0 2.5px rgba(194, 94, 0, 0.2);
 }
 
 /* ==========================================================================
@@ -520,6 +535,7 @@ h1, h2, h3, h4 {
 .hero-content {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: var(--space-6);
 }
 
@@ -807,7 +823,7 @@ h1, h2, h3, h4 {
 
 .video-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(245, 158, 11, 0.4);
+  border-color: rgba(173, 78, 0, 0.35);
   box-shadow: var(--shadow-md);
 }
 
@@ -1011,7 +1027,7 @@ h1, h2, h3, h4 {
 .form-select:focus,
 .form-textarea:focus {
   border-color: var(--color-border-focus);
-  box-shadow: 0 0 0 3px rgba(17, 19, 24, 0.08);
+  box-shadow: 0 0 0 3px rgba(17, 19, 24, 0.12);
   outline: none;
 }
 
@@ -1020,6 +1036,14 @@ h1, h2, h3, h4 {
 .form-textarea[aria-invalid="true"] {
   border-color: var(--color-error);
   box-shadow: 0 0 0 3px var(--color-error-bg);
+}
+
+.form-input[aria-invalid="true"]:focus,
+.form-select[aria-invalid="true"]:focus,
+.form-textarea[aria-invalid="true"]:focus {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.25);
+  outline: none;
 }
 
 .form-select {
@@ -1076,6 +1100,18 @@ h1, h2, h3, h4 {
   margin-top: 2px;
   cursor: pointer;
   flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  transition: box-shadow var(--transition-fast), outline-offset var(--transition-fast);
+}
+
+.form-checkbox:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.form-checkbox[aria-invalid="true"] {
+  outline: 2px solid var(--color-error);
+  outline-offset: 2px;
 }
 
 /* Submission Alerts */
@@ -1090,14 +1126,20 @@ h1, h2, h3, h4 {
 
 .form-alert--error {
   background-color: var(--color-error-bg);
-  border: 1px solid rgba(244, 63, 94, 0.3);
-  color: #fecdd3;
+  border: 1px solid rgba(185, 28, 28, 0.25);
+  color: #991b1b;
 }
 
 .form-alert--success {
   background-color: var(--color-success-bg);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  color: #a7f3d0;
+  border: 1px solid rgba(4, 120, 87, 0.25);
+  color: #065f46;
+}
+
+.form-alert--info {
+  background-color: rgba(37, 99, 235, 0.08);
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  color: #1e40af;
 }
 
 .form-alert.is-visible {
@@ -1111,6 +1153,16 @@ h1, h2, h3, h4 {
   flex-direction: column;
   align-items: center;
   gap: var(--space-4);
+}
+
+.form-success-card:focus {
+  outline: none;
+}
+
+.form-success-card:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+  border-radius: var(--radius-md);
 }
 
 .form-success-icon {
@@ -1129,16 +1181,33 @@ h1, h2, h3, h4 {
 }
 
 .spinner {
+  display: inline-block;
   width: 18px;
   height: 18px;
-  border: 2px solid rgba(8, 9, 13, 0.3);
-  border-top-color: var(--color-text-inverse);
+  border: 2.5px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+  flex-shrink: 0;
+  margin-right: var(--space-2);
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* Progressive Enhancement: Pure CSS No-JS Target Fallback */
+.no-js-success-target {
+  display: none;
+}
+
+.no-js-success-target:target {
+  display: flex;
+}
+
+.no-js-success-target:target ~ form {
+  display: none !important;
 }
 
 /* ==========================================================================

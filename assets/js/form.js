@@ -1,12 +1,16 @@
 /**
  * Jack Pembrook Fan Platform — Join Form Script
  * Features:
- *  - Progressive enhancement (handles no-JS redirect + AJAX submission)
+ *  - Progressive enhancement: leaves native HTML5 validation intact if no-JS, enables custom API when JS runs
+ *  - URL query (?submitted=1) & hash (#submitted) no-JS fallback confirmation handling
  *  - Custom inline validation with Constraint Validation API
- *  - Accessible focus management, aria-live status, aria-invalid, aria-describedby
- *  - Live character counter for textarea (max 500)
- *  - Honeypot spam protection
- *  - Submitting & success state transitions
+ *  - Instant error removal on user input/change correction
+ *  - Accessible focus management, aria-live status announcer (alert vs status), aria-invalid, aria-describedby
+ *  - Live character counter for textarea with threshold styling & overflow edge-case protection
+ *  - Honeypot spam prevention
+ *  - Submit button loading spinner animation with disabled state
+ *  - Local persistence & offline / static server graceful fallbacks
+ *  - Warm personalized success state presentation
  */
 
 (function () {
@@ -18,27 +22,41 @@
   var charCount = document.getElementById('suggestion-count');
   var textarea = document.getElementById('suggestion');
 
-  // 1. Check for URL query param `submitted=1` (No-JS fallback redirect support)
+  // 1. Check for URL query param `submitted=1` or `#submitted` (No-JS fallback redirect support)
   var params = new URLSearchParams(window.location.search);
-  if (params.get('submitted') === '1' && formShell) {
+  if ((params.get('submitted') === '1' || window.location.hash === '#submitted') && formShell) {
     showSuccessState('You are officially on the list! Watch your inbox for upcoming video alerts and breakdown notes.');
     return;
   }
 
   if (!form) return;
 
+  // Progressive enhancement: enable custom validation by applying novalidate via JS
+  // (ensuring native browser validation is available if scripts fail to execute)
+  form.setAttribute('novalidate', 'true');
+
   // 2. Live Character Counter for Textarea
   if (textarea && charCount) {
     var updateCounter = function () {
       var currentLen = textarea.value.length;
-      charCount.textContent = currentLen + ' / 500';
-      if (currentLen >= 480) {
+      if (currentLen > 500) {
+        charCount.textContent = currentLen + ' / 500 (over limit)';
+        charCount.style.color = 'var(--color-error)';
+      } else if (currentLen >= 480) {
+        charCount.textContent = currentLen + ' / 500';
         charCount.style.color = 'var(--color-accent)';
       } else {
+        charCount.textContent = currentLen + ' / 500';
         charCount.style.color = '';
       }
     };
+
     textarea.addEventListener('input', updateCounter);
+    textarea.addEventListener('change', updateCounter);
+    textarea.addEventListener('keyup', updateCounter);
+    textarea.addEventListener('paste', function () {
+      setTimeout(updateCounter, 10);
+    });
     updateCounter();
   }
 
@@ -49,6 +67,12 @@
     if (errorEl) {
       errorEl.textContent = '';
       errorEl.classList.remove('is-visible');
+    }
+
+    // When all fields are valid, clear top-level status banner
+    if (formStatus && form.querySelectorAll('[aria-invalid="true"]').length === 0) {
+      formStatus.classList.remove('is-visible');
+      formStatus.textContent = '';
     }
   }
 
@@ -66,7 +90,7 @@
   function validateField(input) {
     clearFieldError(input);
 
-    if (input.name === 'bot-field') return true; // Honeypot
+    if (input.name === 'bot-field') return true; // Honeypot field
 
     // Required check
     if (input.hasAttribute('required')) {
@@ -92,22 +116,31 @@
       }
     }
 
-    // Textarea max length
+    // Textarea max length check
     if (input.id === 'suggestion' && input.value.length > 500) {
-      showFieldError(input, 'Suggestion must not exceed 500 characters.');
+      showFieldError(input, 'Suggestion must not exceed 500 characters (currently ' + input.value.length + ').');
       return false;
     }
 
     return true;
   }
 
-  // Wire inline blur validation
+  // Wire inline blur & instant correction validation
   var inputs = form.querySelectorAll('input:not([type="hidden"]), select, textarea');
   inputs.forEach(function (input) {
     input.addEventListener('blur', function () {
       validateField(input);
     });
+
+    // Clear error immediately when user types or edits correction
     input.addEventListener('input', function () {
+      if (input.getAttribute('aria-invalid') === 'true') {
+        validateField(input);
+      }
+    });
+
+    // For checkboxes and selects, listen to change events for instant feedback
+    input.addEventListener('change', function () {
       if (input.getAttribute('aria-invalid') === 'true') {
         validateField(input);
       }
@@ -125,7 +158,7 @@
     // Check Honeypot spam field
     var honeypot = form.querySelector('[name="bot-field"]');
     if (honeypot && honeypot.value) {
-      // Quietly succeed to fool bots
+      // Quietly succeed to fool automated bots
       showSuccessState('Thanks for submitting!');
       return;
     }
@@ -152,20 +185,29 @@
       return;
     }
 
+    // Capture user's name for personalized confirmation
+    var nameField = form.querySelector('#name');
+    var submittedName = nameField ? nameField.value.trim() : '';
+
     // Prepare payload
     var formData = new FormData(form);
+    var urlParams = new URLSearchParams(formData);
+    var urlEncoded = urlParams.toString();
+
     var submitBtn = form.querySelector('button[type="submit"]');
-    var originalBtnText = submitBtn.innerHTML;
+    var originalBtnText = submitBtn ? submitBtn.innerHTML : 'Join the Fan List';
 
     isSubmitting = true;
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<span class="spinner" aria-hidden="true"></span> Sending…';
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner" aria-hidden="true"></span> Sending…';
+    }
     announceStatus('Submitting your details…', 'polite');
 
     // Persist submission data locally so user inputs are never lost
     try {
       var record = {
-        name: form.querySelector('#name') ? form.querySelector('#name').value.trim() : '',
+        name: submittedName,
         email: form.querySelector('#email') ? form.querySelector('#email').value.trim() : '',
         favouriteVideo: form.querySelector('#favourite-video') ? form.querySelector('#favourite-video').value : '',
         suggestion: textarea ? textarea.value.trim() : '',
@@ -178,8 +220,10 @@
       // Storage restricted or unavailable; proceed gracefully
     }
 
-    // Try Vercel Serverless API first, fall back to form action / root
-    var targetUrl = window.location.hostname === 'localhost' && !window.location.port ? '/api/submit' : (form.getAttribute('action') || '/api/submit');
+    // Determine target URL: Vercel serverless /api/submit or form action
+    var targetUrl = (window.location.hostname === 'localhost' && !window.location.port) 
+      ? '/api/submit' 
+      : (form.getAttribute('action') || '/api/submit');
 
     fetch(targetUrl, {
       method: 'POST',
@@ -191,45 +235,54 @@
     })
     .then(function (response) {
       if (response.ok || response.status === 200 || response.status === 302 || response.type === 'opaque') {
-        showSuccessState('You are officially on the list! We will notify you whenever Jack drops an ambitious new video experiment.');
+        showSuccessState('You are officially on the list! We will notify you whenever Jack drops an ambitious new video experiment.', submittedName);
       } else {
-        // Fallback for static servers without dynamic route: still confirm gracefully
-        showSuccessState('You are officially on the fan roster! Your response has been logged.');
+        // Fallback for static dev servers without dynamic API route: confirm gracefully
+        showSuccessState('You are officially on the fan roster! Your response has been logged locally.', submittedName);
       }
     })
     .catch(function () {
-      // Offline / local static dev fallback
-      showSuccessState('You are officially on the fan roster! (Logged locally for review).');
+      // Offline / local static fallback
+      showSuccessState('You are officially on the fan roster! Your response has been logged locally.', submittedName);
     })
     .finally(function () {
       isSubmitting = false;
     });
   });
 
-  // 7. Status announcer for screen readers
+  // 7. Status Announcer for Screen Readers & Alert Banners
   function announceStatus(message, type) {
     if (!formStatus) return;
     formStatus.textContent = message;
-    formStatus.className = 'form-alert form-alert--' + (type === 'error' ? 'error' : 'success') + ' is-visible';
+
+    if (type === 'error') {
+      formStatus.setAttribute('role', 'alert');
+      formStatus.setAttribute('aria-live', 'assertive');
+      formStatus.className = 'form-alert form-alert--error is-visible';
+    } else {
+      formStatus.setAttribute('role', 'status');
+      formStatus.setAttribute('aria-live', 'polite');
+      formStatus.className = 'form-alert form-alert--' + (type === 'success' ? 'success' : 'info') + ' is-visible';
+    }
   }
 
-  // 8. Replace form with Warm Confirmation Card
-  function showSuccessState(message) {
+  // 8. Replace Form with Warm Confirmation Card
+  function showSuccessState(message, submittedName) {
     if (!formShell) return;
 
-    var nameVal = form ? form.querySelector('#name').value.trim() : '';
+    var nameVal = submittedName || (form && form.querySelector('#name') ? form.querySelector('#name').value.trim() : '');
     var greeting = nameVal ? 'Welcome aboard, ' + escapeHtml(nameVal) + '!' : 'Welcome aboard!';
 
     formShell.innerHTML =
-      '<div class="form-success-card" tabindex="-1" id="success-message">' +
+      '<div class="form-success-card" tabindex="-1" id="success-message" role="status" aria-live="polite">' +
         '<div class="form-success-icon" aria-hidden="true">' +
-          '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">' +
+          '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">' +
             '<polyline points="20 6 9 17 4 12"></polyline>' +
           '</svg>' +
         '</div>' +
         '<h2 class="section-title">' + greeting + '</h2>' +
-        '<p class="section-desc" style="max-width: 44ch;">' + escapeHtml(message) + '</p>' +
-        '<div style="margin-top: var(--space-4); display: flex; gap: var(--space-4); flex-wrap: wrap; justify-content: center;">' +
+        '<p class="section-desc" style="max-width: 48ch;">' + escapeHtml(message) + '</p>' +
+        '<div style="margin-top: var(--space-6); display: flex; gap: var(--space-4); flex-wrap: wrap; justify-content: center;">' +
           '<a href="videos.html" class="btn btn--primary">Browse Curated Videos</a>' +
           '<a href="index.html" class="btn btn--secondary">Back to Homepage</a>' +
         '</div>' +

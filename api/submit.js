@@ -33,7 +33,7 @@ module.exports = (req, res) => {
     if (botField) {
       // Quietly return success to thwart bots
       if (req.headers['content-type'] && req.headers['content-type'].includes('application/x-www-form-urlencoded')) {
-        return res.redirect(303, '/join?submitted=1');
+        return res.redirect(303, '/join?submitted=1#submitted');
       }
       return res.status(200).json({ ok: true, message: 'Submission logged.' });
     }
@@ -60,7 +60,7 @@ module.exports = (req, res) => {
 
     // Handle traditional form POST redirect for non-JS browsers
     if (req.headers['content-type'] && req.headers['content-type'].includes('application/x-www-form-urlencoded')) {
-      return res.redirect(303, '/join?submitted=1');
+      return res.redirect(303, '/join?submitted=1#submitted');
     }
 
     // Return JSON response for AJAX / fetch submissions

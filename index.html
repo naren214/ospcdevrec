@@ -65,7 +65,7 @@
   </header>
 
   <!-- Main Content -->
-  <main id="main" tabindex="-1">
+  <main id="main" tabindex="-1" role="main">
     <!-- Hero Section -->
     <section class="section hero" aria-labelledby="hero-title">
       <div class="container hero-grid">
@@ -113,7 +113,7 @@
         <div class="hero-visual reveal">
           <div class="hero-card-stack">
             <div class="hero-avatar-frame">
-              <img src="assets/img/avatar.jpg" alt="Jack Pembrook smiling in portrait photograph" class="hero-avatar-img" width="72" height="72" loading="eager" decoding="async">
+              <img src="assets/img/avatar.jpg" alt="Jack Pembrook smiling in portrait photograph" class="hero-avatar-img" width="72" height="72" loading="eager" fetchpriority="high" decoding="async">
               <div class="hero-profile-info">
                 <span class="hero-profile-name">Jack Pembrook</span>
                 <span class="hero-profile-handle">@jackpembrook</span>
@@ -357,11 +357,13 @@
 
         <div>
           <h2 class="footer-col-title">Navigation</h2>
-          <ul class="footer-nav-list">
-            <li><a href="index.html" class="footer-nav-link">Home</a></li>
-            <li><a href="videos.html" class="footer-nav-link">Video Catalog</a></li>
-            <li><a href="join.html" class="footer-nav-link">Join Fan List</a></li>
-          </ul>
+          <nav aria-label="Footer Navigation">
+            <ul class="footer-nav-list">
+              <li><a href="index.html" class="footer-nav-link">Home</a></li>
+              <li><a href="videos.html" class="footer-nav-link">Video Catalog</a></li>
+              <li><a href="join.html" class="footer-nav-link">Join Fan List</a></li>
+            </ul>
+          </nav>
         </div>
 
         <div>

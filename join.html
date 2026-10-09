@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Join the Fan Community &amp; Suggest Ideas — Jack Pembrook Fan Platform</title>
   <meta name="description" content="Sign up for independent fan alerts, get heads-up notifications on new Jack Pembrook video drops, and suggest future challenge experiments.">
-  <meta name="theme-color" content="#08090d">
+  <meta name="theme-color" content="#f8f9fa">
 
   <!-- Open Graph / Social Meta -->
   <meta property="og:type" content="website">
@@ -65,7 +65,7 @@
   </header>
 
   <!-- Main Content -->
-  <main id="main" tabindex="-1">
+  <main id="main" tabindex="-1" role="main">
     <section class="section" aria-labelledby="join-page-title">
       <div class="container container--narrow">
         <div class="section-head section-head--center reveal">
@@ -89,8 +89,32 @@
           <!-- Live Status Announcer for Screen Readers & Inline Alerts -->
           <div id="form-status" class="form-alert" role="status" aria-live="polite" aria-atomic="true"></div>
 
-          <!-- Semantic Netlify-ready Progressive Enhancement Form -->
-          <form id="join-form" name="fan-signup" method="POST" action="/api/submit" data-netlify="true" netlify-honeypot="bot-field" novalidate aria-labelledby="form-heading">
+          <!-- Progressive Enhancement: No-JS Info Banner -->
+          <noscript>
+            <div class="form-alert form-alert--info is-visible" style="display: block; margin-bottom: var(--space-6);">
+              JavaScript is disabled in your browser. This form will submit reliably using standard HTTP POST.
+            </div>
+          </noscript>
+
+          <!-- Progressive Enhancement: Pure CSS Fallback Success Confirmation -->
+          <div id="submitted" class="form-success-card no-js-success-target" tabindex="-1" role="region" aria-label="Subscription confirmation">
+            <div class="form-success-icon" aria-hidden="true">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <h2 class="section-title">Welcome aboard!</h2>
+            <p class="section-desc" style="max-width: 48ch;">
+              You are officially on the fan roster! Watch your inbox for upcoming video alerts and breakdown notes.
+            </p>
+            <div style="margin-top: var(--space-6); display: flex; gap: var(--space-4); flex-wrap: wrap; justify-content: center;">
+              <a href="videos.html" class="btn btn--primary">Browse Curated Videos</a>
+              <a href="index.html" class="btn btn--secondary">Back to Homepage</a>
+            </div>
+          </div>
+
+          <!-- Semantic Progressive Enhancement Form (novalidate applied via JS if scripts enabled) -->
+          <form id="join-form" name="fan-signup" method="POST" action="/api/submit" data-netlify="true" netlify-honeypot="bot-field" aria-labelledby="form-heading">
             <h2 id="form-heading" class="visually-hidden">Fan Registration Form</h2>
 
             <!-- Netlify Form Name -->
@@ -152,7 +176,7 @@
               <textarea id="suggestion" name="suggestion" class="form-textarea" maxlength="500" placeholder="e.g. Try to profit from a Michelin 3-star restaurant, or a 48-hour stealth test in an abandoned mall..." aria-describedby="suggestion-counter suggestion-error"></textarea>
               <div class="form-meta-row">
                 <span id="suggestion-counter" class="form-meta-hint">Suggestions are compiled into community brainstorm recaps.</span>
-                <span id="suggestion-count" aria-live="polite" aria-atomic="true">0 / 500</span>
+                <span id="suggestion-count">0 / 500</span>
               </div>
               <p id="suggestion-error" class="form-error-msg" role="alert" aria-live="assertive"></p>
             </div>
@@ -199,11 +223,13 @@
 
         <div>
           <h2 class="footer-col-title">Navigation</h2>
-          <ul class="footer-nav-list">
-            <li><a href="index.html" class="footer-nav-link">Home</a></li>
-            <li><a href="videos.html" class="footer-nav-link">Video Catalog</a></li>
-            <li><a href="join.html" class="footer-nav-link">Join Fan List</a></li>
-          </ul>
+          <nav aria-label="Footer Navigation">
+            <ul class="footer-nav-list">
+              <li><a href="index.html" class="footer-nav-link">Home</a></li>
+              <li><a href="videos.html" class="footer-nav-link">Video Catalog</a></li>
+              <li><a href="join.html" class="footer-nav-link">Join Fan List</a></li>
+            </ul>
+          </nav>
         </div>
 
         <div>

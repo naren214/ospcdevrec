@@ -1,6 +1,9 @@
 /**
  * Jack Pembrook Fan Platform — Main Core Script
- * Features: Accessible mobile navigation, Scroll reveal animations, Lite-embed YouTube facade
+ * Features:
+ *  - Fully accessible mobile navigation with focus trapping, Escape key closing, and focus return
+ *  - High-performance lite-embed YouTube facade triggered by Space, Enter, and Click
+ *  - Subtle scroll reveal animations with prefers-reduced-motion fail-safe
  * Zero external dependencies. Under 5 KB.
  */
 
@@ -14,6 +17,10 @@
 
     if (!toggleBtn || !navMenu) return;
 
+    function getFocusableElements() {
+      return navMenu.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])');
+    }
+
     function toggleNav(forceState) {
       var isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
       var nextState = typeof forceState === 'boolean' ? forceState : !isExpanded;
@@ -23,27 +30,69 @@
       navMenu.classList.toggle('is-active', nextState);
     }
 
+    // Toggle button click
     toggleBtn.addEventListener('click', function (e) {
       e.stopPropagation();
+      var willClose = toggleBtn.getAttribute('aria-expanded') === 'true';
       toggleNav();
-    });
-
-    // Close menu when clicking outside
-    document.addEventListener('click', function (e) {
-      if (navMenu.classList.contains('is-active') && !navMenu.contains(e.target) && !toggleBtn.contains(e.target)) {
-        toggleNav(false);
+      if (willClose) {
+        toggleBtn.focus();
       }
     });
 
-    // Close on Escape key
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && navMenu.classList.contains('is-active')) {
+    // Close menu when clicking outside and return focus to toggle button
+    document.addEventListener('click', function (e) {
+      if (navMenu.classList.contains('is-active') && !navMenu.contains(e.target) && !toggleBtn.contains(e.target)) {
         toggleNav(false);
         toggleBtn.focus();
       }
     });
 
-    // Close menu when window resized to desktop
+    // Close menu when clicking any nav link within the menu
+    navMenu.addEventListener('click', function (e) {
+      var link = e.target.closest('a');
+      if (link && navMenu.classList.contains('is-active')) {
+        toggleNav(false);
+      }
+    });
+
+    // Keyboard navigation: Escape key closes menu, Tab traps focus inside active nav
+    document.addEventListener('keydown', function (e) {
+      if (!navMenu.classList.contains('is-active')) return;
+
+      // Close on Escape key and return focus to toggle button
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        toggleNav(false);
+        toggleBtn.focus();
+        return;
+      }
+
+      // Focus trap within mobile menu when open
+      if (e.key === 'Tab') {
+        var focusables = getFocusableElements();
+        if (!focusables || focusables.length === 0) return;
+
+        var firstFocusable = focusables[0];
+        var lastFocusable = focusables[focusables.length - 1];
+
+        if (e.shiftKey) {
+          // Shift + Tab: if focus is on toggleBtn or first element, wrap to last item
+          if (document.activeElement === toggleBtn) {
+            e.preventDefault();
+            lastFocusable.focus();
+          }
+        } else {
+          // Tab: if focus is on last element in menu, cycle back to toggleBtn
+          if (document.activeElement === lastFocusable) {
+            e.preventDefault();
+            toggleBtn.focus();
+          }
+        }
+      }
+    });
+
+    // Close menu gracefully when window resized to desktop (> 840px)
     window.addEventListener('resize', function () {
       if (window.innerWidth > 840 && navMenu.classList.contains('is-active')) {
         toggleNav(false);
@@ -52,13 +101,15 @@
   }
 
   // --- 2. Lite-Embed YouTube Facade ---
-  // Zero iframes or scripts loaded until user explicitly interacts!
+  // Zero iframes or external scripts loaded until user explicitly interacts!
   function initLiteEmbeds() {
     var embeds = document.querySelectorAll('.lite-embed');
 
     embeds.forEach(function (embed) {
-      embed.addEventListener('click', function (e) {
-        e.preventDefault();
+      function activateEmbed(e) {
+        if (e && typeof e.preventDefault === 'function') {
+          e.preventDefault();
+        }
         var videoId = embed.getAttribute('data-video-id');
         var videoTitle = embed.getAttribute('data-title') || 'YouTube video player';
 
@@ -77,14 +128,23 @@
         embed.innerHTML = '';
         embed.appendChild(iframe);
         embed.classList.add('is-loaded');
-        iframe.focus();
-      });
 
-      // Accessible keyboard activation for div[role="button"]
+        // Transition semantics: remove button trigger attributes now that iframe is active
+        embed.removeAttribute('role');
+        embed.removeAttribute('tabindex');
+        embed.removeAttribute('aria-label');
+
+        iframe.focus();
+      }
+
+      // Mouse click trigger
+      embed.addEventListener('click', activateEmbed);
+
+      // Accessible keyboard activation for Space and Enter keys
       embed.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar' || e.keyCode === 13 || e.keyCode === 32) {
           e.preventDefault();
-          embed.click();
+          activateEmbed(e);
         }
       });
     });
