@@ -32,7 +32,7 @@ module.exports = (req, res) => {
     // Honeypot spam detection
     if (botField) {
       // Quietly return success to thwart bots
-      if (req.headers['content-type'] && req.headers['content-type'].includes('application/x-www-form-urlencoded')) {
+      if (req.headers['content-type'] && req.headers['content-type'].includes('application/x-www-form-urlencoded') && !req.headers.accept?.includes('application/json')) {
         return res.redirect(303, '/join?submitted=1#submitted');
       }
       return res.status(200).json({ ok: true, message: 'Submission logged.' });
@@ -59,14 +59,14 @@ module.exports = (req, res) => {
     console.log(`[Fan Signup] ${name} <${email}> | Fav: "${favVideo}" | Suggestion: "${suggestion.slice(0, 60)}"`);
 
     // Handle traditional form POST redirect for non-JS browsers
-    if (req.headers['content-type'] && req.headers['content-type'].includes('application/x-www-form-urlencoded')) {
+    if (req.headers['content-type'] && req.headers['content-type'].includes('application/x-www-form-urlencoded') && !req.headers.accept?.includes('application/json')) {
       return res.redirect(303, '/join?submitted=1#submitted');
     }
 
     // Return JSON response for AJAX / fetch submissions
     return res.status(200).json({
       ok: true,
-      message: 'You are officially on the list! We will notify you whenever Jack drops an ambitious new video experiment.'
+      message: 'Your signup was received. This site currently logs submissions and does not send email alerts.'
     });
   } catch (err) {
     console.error('[Fan Signup Error]', err);

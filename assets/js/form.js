@@ -25,7 +25,7 @@
   // 1. Check for URL query param `submitted=1` or `#submitted` (No-JS fallback redirect support)
   var params = new URLSearchParams(window.location.search);
   if ((params.get('submitted') === '1' || window.location.hash === '#submitted') && formShell) {
-    showSuccessState('You are officially on the list! Watch your inbox for upcoming video alerts and breakdown notes.');
+    showSuccessState('Your signup was received. This site currently logs submissions and does not send email alerts.');
     return;
   }
 
@@ -234,19 +234,22 @@
       body: urlEncoded
     })
     .then(function (response) {
-      if (response.ok || response.status === 200 || response.status === 302 || response.type === 'opaque') {
-        showSuccessState('You are officially on the list! We will notify you whenever Jack drops an ambitious new video experiment.', submittedName);
-      } else {
-        // Fallback for static dev servers without dynamic API route: confirm gracefully
-        showSuccessState('You are officially on the fan roster! Your response has been logged locally.', submittedName);
-      }
+      if (!response.ok) throw new Error('Submission failed');
+      return response.json();
+    })
+    .then(function (result) {
+      if (result.ok !== true) throw new Error('Submission not accepted');
+      showSuccessState(result.message || 'Your signup was received.', submittedName);
     })
     .catch(function () {
-      // Offline / local static fallback
-      showSuccessState('You are officially on the fan roster! Your response has been logged locally.', submittedName);
+      announceStatus('We could not submit your details. Please try again when the service is available.', 'error');
     })
     .finally(function () {
       isSubmitting = false;
+      if (submitBtn && submitBtn.isConnected) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+      }
     });
   });
 
